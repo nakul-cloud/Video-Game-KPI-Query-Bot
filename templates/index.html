@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KPI Query Bot - Video Game Intelligence</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'],
+                    },
+                    colors: {
+                        cyber: {
+                            black: '#0a0a0a',
+                            dark: '#111111',
+                            panel: '#161616',
+                            green: '#00ff9d',
+                            cyan: '#00f0ff',
+                            red: '#ff2a6d',
+                            text: '#e0e0e0',
+                            dim: '#4a4a4a'
+                        }
+                    },
+                    boxShadow: {
+                        'neon-green': '0 0 5px theme("colors.cyber.green"), 0 0 20px theme("colors.cyber.green")',
+                        'neon-cyan': '0 0 5px theme("colors.cyber.cyan"), 0 0 20px theme("colors.cyber.cyan")',
+                        'neon-red': '0 0 5px theme("colors.cyber.red"), 0 0 20px theme("colors.cyber.red")',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #050505;
+            background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #050505 70%);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff9d; 
+        }
+
+        .cyber-border {
+            position: relative;
+        }
+        .cyber-border::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #00ff9d, transparent);
+        }
+    </style>
+</head>
+<body class="text-cyber-text min-h-screen flex flex-col font-sans">
+
+    <header class="w-full bg-cyber-dark/80 backdrop-blur-md border-b border-white/5 py-4 px-6 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded bg-gradient-to-br from-indigo-900 to-purple-900 flex items-center justify-center shadow-lg relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-cyber-green/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <i class="fa-solid fa-gamepad text-2xl text-cyber-cyan"></i>
+                </div>
+                <div>
+                    <h1 class="font-display text-2xl font-bold tracking-wider text-white">
+                        KPI <span class="text-cyber-cyan">QUERY</span> BOT
+                    </h1>
+                    <p class="text-xs text-cyber-dim tracking-widest uppercase">Video Game Sales Intelligence</p>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <div class="hidden md:flex flex-col items-center bg-cyber-panel border border-white/5 px-4 py-2 rounded">
+                    <span class="text-cyber-green font-display font-bold text-xl">--</span>
+                    <span class="text-[10px] uppercase text-gray-500">Games</span>
+                </div>
+                <div class="hidden md:flex flex-col items-center bg-cyber-panel border border-white/5 px-4 py-2 rounded">
+                    <span id="query-count" class="text-cyber-cyan font-display font-bold text-xl">0</span>
+                    <span class="text-[10px] uppercase text-gray-500">Queries</span>
+                </div>
+                <div class="hidden md:flex flex-col items-center bg-cyber-panel border border-white/5 px-4 py-2 rounded">
+                    <span class="text-purple-400 font-display font-bold text-xl">2</span>
+                    <span class="text-[10px] uppercase text-gray-500">Services</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl mx-auto w-full p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <aside class="space-y-6">
+            
+            <div class="bg-cyber-panel border border-white/5 rounded-lg p-5">
+                <div class="flex items-center gap-2 mb-4 border-l-2 border-cyber-cyan pl-3">
+                    <i class="fa-solid fa-bolt text-cyber-cyan text-sm"></i>
+                    <h3 class="font-display text-sm font-bold uppercase tracking-wider">Quick Queries</h3>
+                </div>
+                
+                <div class="space-y-2">
+                    <button onclick="setInput('Top 5 games by sales')" class="w-full text-left text-sm px-3 py-2 rounded bg-white/5 hover:bg-cyber-cyan/20 hover:text-cyber-cyan transition-all border border-transparent hover:border-cyber-cyan/30 truncate">
+                        Top 5 games by sales
+                    </button>
+                    <button onclick="setInput('PlayStation games 2023')" class="w-full text-left text-sm px-3 py-2 rounded bg-white/5 hover:bg-cyber-cyan/20 hover:text-cyber-cyan transition-all border border-transparent hover:border-cyber-cyan/30 truncate">
+                        PlayStation games 2023
+                    </button>
+                    <button onclick="setInput('Best RPG games')" class="w-full text-left text-sm px-3 py-2 rounded bg-white/5 hover:bg-cyber-cyan/20 hover:text-cyber-cyan transition-all border border-transparent hover:border-cyber-cyan/30 truncate">
+                        Best RPG games
+                    </button>
+                    <button onclick="setInput('Xbox sales comparison')" class="w-full text-left text-sm px-3 py-2 rounded bg-white/5 hover:bg-cyber-cyan/20 hover:text-cyber-cyan transition-all border border-transparent hover:border-cyber-cyan/30 truncate">
+                        Xbox sales comparison
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-cyber-panel border border-white/5 rounded-lg p-5">
+                <div class="flex items-center gap-2 mb-4 border-l-2 border-cyber-green pl-3">
+                    <i class="fa-solid fa-server text-cyber-green text-sm"></i>
+                    <h3 class="font-display text-sm font-bold uppercase tracking-wider">System Status</h3>
+                </div>
+
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400">Database</span>
+                        <span class="px-2 py-0.5 text-[10px] font-bold bg-cyber-green/10 text-cyber-green border border-cyber-green/30 rounded">ACTIVE</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400">Gemini AI</span>
+                        <span class="px-2 py-0.5 text-[10px] font-bold bg-cyber-green/10 text-cyber-green border border-cyber-green/30 rounded">READY</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400">Tavily API</span>
+                        <span class="px-2 py-0.5 text-[10px] font-bold bg-yellow-500/10 text-yellow-500 border border-yellow-500/30 rounded">IDLE</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <section class="lg:col-span-3 space-y-6">
+            
+            <div class="bg-cyber-panel border border-white/10 rounded-xl p-1 shadow-lg relative">
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-cyber-cyan via-purple-500 to-cyber-green rounded-xl opacity-20 blur"></div>
+                <div class="relative bg-cyber-panel rounded-lg flex flex-col md:flex-row gap-2 p-2">
+                    <input type="text" id="queryInput" 
+                        placeholder="Ask a question about video game sales..." 
+                        class="flex-1 bg-black/50 border border-white/10 text-white px-4 py-3 rounded focus:outline-none focus:border-cyber-cyan transition-colors font-mono"
+                        value="Top 10 games by sales">
+                    
+                    <button onclick="handleQuery()" id="searchBtn"
+                        class="bg-cyber-green hover:bg-emerald-400 text-black font-display font-bold px-8 py-3 rounded shadow-[0_0_15px_rgba(0,255,157,0.3)] hover:shadow-[0_0_25px_rgba(0,255,157,0.6)] transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rocket"></i>
+                        <span>GET INSIGHTS</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="errorBanner" class="hidden bg-red-900/20 border border-red-500/50 rounded-lg p-4 flex items-start gap-4 animate-pulse">
+                <div class="bg-red-500/20 p-2 rounded-full">
+                    <i class="fa-solid fa-circle-exclamation text-cyber-red text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="text-cyber-red font-bold font-display">System Error</h4>
+                    <p id="errorText" class="text-red-200 text-sm mt-1">Network error: Check backend connection.</p>
+                </div>
+            </div>
+
+            <div id="resultsArea" class="space-y-6 hidden">
+                
+                <div class="bg-cyber-panel border border-white/5 rounded-lg overflow-hidden">
+                    <div class="bg-white/5 px-4 py-2 border-b border-white/5 flex items-center justify-between">
+                        <span class="font-display text-sm text-cyber-cyan"><i class="fa-solid fa-brain mr-2"></i>AI Analysis</span>
+                        <div class="flex gap-1">
+                            <div class="w-2 h-2 rounded-full bg-cyber-cyan animate-ping"></div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p id="analysisText" class="text-lg leading-relaxed text-gray-200">
+                            </p>
+                    </div>
+                </div>
+
+                <div class="bg-black/40 border border-white/5 rounded-lg overflow-hidden">
+                    <div class="px-4 py-2 bg-black/60 border-b border-white/5 text-xs text-gray-500 font-mono flex justify-between">
+                        <span>GENERATED SQL</span>
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <div class="p-4 overflow-x-auto">
+                        <code id="sqlText" class="font-mono text-sm text-purple-400">
+                            </code>
+                    </div>
+                </div>
+
+                <div class="bg-cyber-panel border border-white/5 rounded-lg overflow-hidden">
+                     <div class="bg-white/5 px-4 py-2 border-b border-white/5 flex items-center justify-between">
+                        <span class="font-display text-sm text-cyber-green"><i class="fa-solid fa-table mr-2"></i>Data Results</span>
+                        <button class="text-xs bg-white/10 hover:bg-white/20 px-2 py-1 rounded transition">Download CSV</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-white/5 text-gray-400 font-display uppercase text-xs">
+                                <tr id="tableHeader">
+                                    </tr>
+                            </thead>
+                            <tbody id="tableBody" class="divide-y divide-white/5 text-gray-300">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="enrichmentContainer" class="hidden bg-indigo-900/20 border border-indigo-500/30 rounded-lg p-4">
+                     <div class="flex items-center gap-2 mb-2 text-indigo-400">
+                        <i class="fa-solid fa-globe"></i>
+                        <h4 class="font-bold">Market Context</h4>
+                    </div>
+                    <div id="enrichmentText" class="text-sm text-indigo-200 pl-4 border-l border-indigo-500/30"></div>
+                </div>
+
+            </div>
+
+            <div class="pt-4 border-t border-white/5">
+                <h4 class="text-xs text-gray-500 uppercase tracking-widest mb-3">Recent Queries</h4>
+                <div id="recentQueries" class="flex flex-wrap gap-2">
+                    <span class="text-xs bg-white/5 border border-white/10 px-3 py-1 rounded-full text-gray-400">top 10 games sales</span>
+                    <span class="text-xs bg-white/5 border border-white/10 px-3 py-1 rounded-full text-gray-400">nintendo switch reviews</span>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="text-center py-6 text-xs text-gray-600 border-t border-white/5">
+        <p>🎯 KPI Query Bot | Using Tavily for Market Context | Gemini AI Powered Analysis</p>
+    </footer>
+
+    <script>
+        // State
+        const BACKEND_URL = 'http://127.0.0.1:5000/api/query'; // Expects a generic POST endpoint
+        let queryHistory = [];
+
+        // Helper: Set Input
+        function setInput(text) {
+            document.getElementById('queryInput').value = text;
+        }
+
+        // Helper: Show Error
+        function showError(msg) {
+            const banner = document.getElementById('errorBanner');
+            const text = document.getElementById('errorText');
+            text.innerText = msg;
+            banner.classList.remove('hidden');
+            document.getElementById('resultsArea').classList.add('hidden');
+        }
+
+        // Helper: Render Table
+        function renderTable(data) {
+            if (!data || data.length === 0) return;
+            
+            const thead = document.getElementById('tableHeader');
+            const tbody = document.getElementById('tableBody');
+            
+            // Clear
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+
+            // Headers
+            const headers = Object.keys(data[0]);
+            headers.forEach(h => {
+                const th = document.createElement('th');
+                th.className = "px-4 py-3";
+                th.innerText = h.replace(/_/g, ' '); // Clean string
+                thead.appendChild(th);
+            });
+
+            // Rows
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-white/5 transition-colors";
+                headers.forEach(h => {
+                    const td = document.createElement('td');
+                    td.className = "px-4 py-3";
+                    
+                    // Simple formatting for numbers
+                    let val = row[h];
+                    if (typeof val === 'number' && h.includes('sales')) {
+                        val = val.toFixed(2) + 'M';
+                    }
+                    td.innerText = val !== null ? val : '-';
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Main Function
+        async function handleQuery() {
+            const query = document.getElementById('queryInput').value;
+            if (!query) return;
+
+            // UI Loading State
+            const btn = document.getElementById('searchBtn');
+            const originalBtnText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> PROCESSING...';
+            btn.disabled = true;
+            document.getElementById('errorBanner').classList.add('hidden');
+            document.getElementById('resultsArea').classList.add('hidden');
+
+            try {
+                // Mock Fetch - In a real app, remove the comment below and ensure backend has CORS enabled
+                const response = await fetch(BACKEND_URL, {
+                     method: 'POST',
+                     headers: { 'Content-Type': 'application/json' },
+                     body: JSON.stringify({ query: query })
+                });
+
+                if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+                const result = await response.json();
+
+                // 1. Update Analysis
+                document.getElementById('analysisText').innerText = result.analysis || "No analysis generated.";
+                
+                // 2. Update SQL
+                document.getElementById('sqlText').innerText = result.sql || "-- No SQL generated";
+                
+                // 3. Update Table
+                if (result.data) {
+                    renderTable(JSON.parse(result.data)); // Assuming data comes as JSON string or object
+                } else if (Array.isArray(result.data)) {
+                     renderTable(result.data);
+                }
+
+                // 4. Update Enrichment
+                const enrichDiv = document.getElementById('enrichmentContainer');
+                const enrichText = document.getElementById('enrichmentText');
+                if (result.enrichment && Object.keys(result.enrichment).length > 0) {
+                    enrichDiv.classList.remove('hidden');
+                    // Just taking the first key for demo
+                    const key = Object.keys(result.enrichment)[0];
+                    enrichText.innerText = result.enrichment[key];
+                } else {
+                    enrichDiv.classList.add('hidden');
+                }
+
+                // Show Results
+                document.getElementById('resultsArea').classList.remove('hidden');
+                
+                // Update Stats
+                const countElem = document.getElementById('query-count');
+                countElem.innerText = parseInt(countElem.innerText) + 1;
+
+            } catch (error) {
+                console.error(error);
+                // IF FETCH FAILS (Mocking a network error for the UI demo)
+                showError(`Network error: ${error.message}. Ensure backend is running at ${BACKEND_URL}`);
+            } finally {
+                btn.innerHTML = originalBtnText;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
