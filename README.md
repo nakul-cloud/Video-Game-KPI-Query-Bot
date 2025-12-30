@@ -38,7 +38,7 @@ It is designed for **business intelligence** and currently uses a **Video Game S
 
 | Layer | Technology |
 |-------|-------------|
-| UI / API | Flask + HTML |
+| UI / API | Flask + HTML + Tailwind CSS + JS  |
 | Agent Orchestration | **LangGraph** |
 | LLM | **Groq Mixtral-8x7B** or Llama-3.3-70B |
 | Tools | LangChain Tool Calling |
